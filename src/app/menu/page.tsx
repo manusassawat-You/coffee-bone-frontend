@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import { Menu } from "@/types/menu";
-import { menuService } from "@/lib/api/menu/menu.sevice";
-import Navbar from "@/components/layout/navbar";
+import { menuService } from "@/lib/api/menu/menu.service";
 
 export default function MenuPage() {
   const [menus, setMenus] = useState<Menu[]>([]);
-
+  const router = useRouter();
   useEffect(() => {
     const loadMenus = async () => {
       const data = await menuService.getMenus();
@@ -30,7 +29,10 @@ export default function MenuPage() {
             <div className="flex justify-between mt-4">
               <span className="text-orange-500 font-bold">฿{menu.price}</span>
 
-              <button className="bg-orange-500 text-white px-4 py-2 rounded">
+              <button
+                className="bg-orange-500 text-white px-4 py-2 rounded"
+                onClick={() => router.push(`/menu/${menu.id}`)}
+              >
                 + สั่งเลย
               </button>
             </div>
