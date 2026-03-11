@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { Menu } from "@/types/menu";
 import { menuService } from "@/lib/api/menu/menu.service";
 import { addonService } from "@/lib/api/addon/addon.service";
 import { cartService } from "@/lib/api/cart/cart.service";
+
+import toast from "react-hot-toast";
 
 type Addon = {
   id: string;
@@ -17,31 +19,32 @@ type Addon = {
 
 export default function MenuDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
 
   const [menu, setMenu] = useState<Menu | null>(null);
   const [addons, setAddons] = useState<Addon[]>([]);
-
-  const [selectedBean, setSelectedBean] = useState<string | null>(null);
-  const [selectedTemp, setSelectedTemp] = useState<string | null>(null);
-  const [selectedRoast, setSelectedRoast] = useState<string | null>(null);
-  const [selectedShots, setSelectedShots] = useState<string[]>([]);
-
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const loadData = async () => {
-      const menuData = await menuService.getMenuById(id as string);
-      const addonData = await addonService.getAddons();
+      try {
+        const menuData = await menuService.getMenuById(id as string);
+        const addonData = await addonService.getAddons();
 
-      setMenu(menuData);
-      setAddons(addonData);
+        setMenu(menuData);
+        setAddons(addonData);
+      } catch (err) {
+        console.error(err);
+        toast.error("โหลดข้อมูลไม่สำเร็จ");
+      }
     };
 
     loadData();
   }, [id]);
 
-  const toggleShot = (addonId: string) => {
-    setSelectedShots((prev) =>
+  const toggleAddon = (addonId: string) => {
+    setSelectedAddons((prev) =>
       prev.includes(addonId)
         ? prev.filter((id) => id !== addonId)
         : [...prev, addonId],
@@ -49,20 +52,22 @@ export default function MenuDetailPage() {
   };
 
   const addToCart = async () => {
-    const addonsToSend = [
-      ...(selectedBean ? [selectedBean] : []),
-      ...(selectedTemp ? [selectedTemp] : []),
-      ...(selectedRoast ? [selectedRoast] : []),
-      ...selectedShots,
-    ];
+    try {
+      await cartService.addToCart({
+        menuId: id as string,
+        quantity,
+        addons: selectedAddons,
+      });
 
-    await cartService.addToCart({
-      menuId: id as string,
-      quantity,
-      addons: addonsToSend,
-    });
+      toast.success("เพิ่มลงตะกร้าแล้ว");
 
-    alert("เพิ่มลงตะกร้าแล้ว");
+      setTimeout(() => {
+        router.push("/cart");
+      }, 800);
+    } catch (err) {
+      console.error(err);
+      toast.error("เพิ่มสินค้าไม่สำเร็จ");
+    }
   };
 
   if (!menu) return <div className="p-10">Loading...</div>;
@@ -86,13 +91,12 @@ export default function MenuDetailPage() {
           {beanAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => setSelectedBean(addon.id)}
-              className={`border p-3 rounded
-            ${
-              selectedBean === addon.id
-                ? "border-orange-500 bg-orange-50"
-                : "border-gray-200"
-            }`}
+              onClick={() => toggleAddon(addon.id)}
+              className={`border p-3 rounded ${
+                selectedAddons.includes(addon.id)
+                  ? "border-orange-500 bg-orange-50"
+                  : "border-gray-200"
+              }`}
             >
               {addon.title} +฿{addon.price}
             </button>
@@ -108,13 +112,12 @@ export default function MenuDetailPage() {
           {tempAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => setSelectedTemp(addon.id)}
-              className={`border px-4 py-2 rounded
-            ${
-              selectedTemp === addon.id
-                ? "border-orange-500 bg-orange-50"
-                : "border-gray-200"
-            }`}
+              onClick={() => toggleAddon(addon.id)}
+              className={`border px-4 py-2 rounded ${
+                selectedAddons.includes(addon.id)
+                  ? "border-orange-500 bg-orange-50"
+                  : "border-gray-200"
+              }`}
             >
               {addon.title}
             </button>
@@ -130,13 +133,12 @@ export default function MenuDetailPage() {
           {roastAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => setSelectedRoast(addon.id)}
-              className={`border px-4 py-2 rounded
-            ${
-              selectedRoast === addon.id
-                ? "border-orange-500 bg-orange-50"
-                : "border-gray-200"
-            }`}
+              onClick={() => toggleAddon(addon.id)}
+              className={`border px-4 py-2 rounded ${
+                selectedAddons.includes(addon.id)
+                  ? "border-orange-500 bg-orange-50"
+                  : "border-gray-200"
+              }`}
             >
               {addon.title}
             </button>
@@ -152,13 +154,12 @@ export default function MenuDetailPage() {
           {shotAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => toggleShot(addon.id)}
-              className={`border px-4 py-2 rounded
-            ${
-              selectedShots.includes(addon.id)
-                ? "border-orange-500 bg-orange-50"
-                : "border-gray-200"
-            }`}
+              onClick={() => toggleAddon(addon.id)}
+              className={`border px-4 py-2 rounded ${
+                selectedAddons.includes(addon.id)
+                  ? "border-orange-500 bg-orange-50"
+                  : "border-gray-200"
+              }`}
             >
               {addon.title} +฿{addon.price}
             </button>

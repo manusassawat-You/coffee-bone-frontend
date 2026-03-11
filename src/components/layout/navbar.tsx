@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ShoppingCart, User } from "lucide-react";
+import CartBadge from "@/components/cart/cart-badge";
 
 export default function Navbar() {
   return (
@@ -20,9 +21,11 @@ export default function Navbar() {
 
       {/* Right icons */}
       <div className="flex gap-4 items-center">
-        <Link href="/cart">
-          <ShoppingCart className="w-5 h-5" />
-        </Link>
+        <div className="relative">
+          <Link href="/cart">🛒</Link>
+
+          <CartBadge />
+        </div>
 
         <Link href="/profile">
           <User className="w-5 h-5" />

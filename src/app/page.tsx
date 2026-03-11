@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -17,12 +18,12 @@ export default function Home() {
           </p>
 
           <div className="flex gap-4">
-            <a
+            <Link
               href="/menu"
               className="bg-white text-orange-500 px-6 py-3 rounded-lg font-semibold"
             >
               ☕ สั่งกาแฟเลย
-            </a>
+            </Link>
           </div>
         </div>
 

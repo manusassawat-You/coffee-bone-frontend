@@ -14,13 +14,12 @@ export default function LoginForm() {
     e.preventDefault();
 
     try {
-      const res = await authService.login({
+      await authService.login({
         email,
         password,
       });
 
-      localStorage.setItem("token", res.access_token);
-
+      // ไม่ต้อง set token ซ้ำ เพราะ authService ทำแล้ว
       router.push("/");
     } catch (err) {
       console.error(err);
