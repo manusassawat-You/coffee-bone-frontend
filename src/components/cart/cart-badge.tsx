@@ -2,30 +2,34 @@
 
 import { useEffect, useState } from "react";
 import { cartService } from "@/lib/api/cart/cart.service";
-import { CartItem } from "@/types/cart";
+import { useAuth } from "@/context/auth-context";
 
 export default function CartBadge() {
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState(0);
+  const { user } = useAuth();
 
   useEffect(() => {
     const load = async () => {
-      const data = await cartService.getCart();
+      if (!user) return;
 
-      const total = data.items.reduce(
-        (sum: number, item: CartItem) => sum + item.quantity,
-        0,
-      );
+      try {
+        const cart = await cartService.getCart();
 
-      setCount(total);
+        if (cart?.cartItems) {
+          setCount(cart.cartItems.length);
+        }
+      } catch {
+        setCount(0);
+      }
     };
 
     load();
-  }, []);
+  }, [user]);
 
   if (count === 0) return null;
 
   return (
-    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
+    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
       {count}
     </span>
   );

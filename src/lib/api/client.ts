@@ -1,6 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export async function apiFetch(path: string, options?: RequestInit) {
+export async function apiFetch<T>(
+  path: string,
+  options?: RequestInit,
+): Promise<T> {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -8,17 +11,37 @@ export async function apiFetch(path: string, options?: RequestInit) {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options?.headers || {}),
     },
   });
 
-  const text = await res.text();
-  const data = text ? JSON.parse(text) : {};
+  let data: unknown = {};
 
-  if (!res.ok) {
-    throw new Error(data.message || "API error");
+  try {
+    const text = await res.text();
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = {};
   }
 
-  return data;
+  if (res.status === 401) {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      document.cookie = "token=; path=/; max-age=0";
+      window.location.href = "/login";
+    }
+    throw new Error("Unauthorized");
+  }
+
+  if (!res.ok) {
+    const message =
+      typeof data === "object" && data && "message" in data
+        ? (data as { message?: string }).message
+        : "API error";
+
+    throw new Error(message);
+  }
+
+  return data as T;
 }

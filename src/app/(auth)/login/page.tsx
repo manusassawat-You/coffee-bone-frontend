@@ -1,4 +1,5 @@
 import LoginForm from "@/components/features/login-form";
+import Link from "next/link";
 
 export default function LoginPage() {
   return (
@@ -8,6 +9,7 @@ export default function LoginPage() {
         <h1 className="text-3xl font-bold text-orange-600 flex items-center gap-2 justify-center">
           ☕ Coffee Bone
         </h1>
+
         <p className="text-gray-600 text-sm mt-2">
           สั่งกาแฟล่วงหน้า รับง่าย รวดเร็ว
         </p>
@@ -16,6 +18,7 @@ export default function LoginPage() {
       {/* Card */}
       <div className="bg-white rounded-xl shadow-md w-420px p-8">
         <h2 className="text-lg font-semibold mb-1">เข้าสู่ระบบ</h2>
+
         <p className="text-gray-500 text-sm mb-6">
           กรอกอีเมลและรหัสผ่านเพื่อเข้าใช้งาน
         </p>
@@ -24,7 +27,9 @@ export default function LoginPage() {
 
         <div className="text-sm text-center mt-4">
           ยังไม่มีบัญชี?{" "}
-          <span className="text-orange-500 cursor-pointer">สมัครสมาชิก</span>
+          <Link href="/register" className="text-orange-500">
+            สมัครสมาชิก
+          </Link>
         </div>
       </div>
     </div>

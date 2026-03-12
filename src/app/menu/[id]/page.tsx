@@ -43,12 +43,17 @@ export default function MenuDetailPage() {
     loadData();
   }, [id]);
 
-  const toggleAddon = (addonId: string) => {
-    setSelectedAddons((prev) =>
-      prev.includes(addonId)
-        ? prev.filter((id) => id !== addonId)
-        : [...prev, addonId],
-    );
+  // ⭐ เลือกได้ 1 ตัวต่อ type
+  const toggleAddon = (addon: Addon) => {
+    setSelectedAddons((prev) => {
+      // ลบ addon ที่อยู่ type เดียวกันออกก่อน
+      const filtered = prev.filter((selectedId) => {
+        const existing = addons.find((a) => a.id === selectedId);
+        return existing?.type !== addon.type;
+      });
+
+      return [...filtered, addon.id];
+    });
   };
 
   const addToCart = async () => {
@@ -91,7 +96,7 @@ export default function MenuDetailPage() {
           {beanAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => toggleAddon(addon.id)}
+              onClick={() => toggleAddon(addon)}
               className={`border p-3 rounded ${
                 selectedAddons.includes(addon.id)
                   ? "border-orange-500 bg-orange-50"
@@ -112,7 +117,7 @@ export default function MenuDetailPage() {
           {tempAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => toggleAddon(addon.id)}
+              onClick={() => toggleAddon(addon)}
               className={`border px-4 py-2 rounded ${
                 selectedAddons.includes(addon.id)
                   ? "border-orange-500 bg-orange-50"
@@ -133,7 +138,7 @@ export default function MenuDetailPage() {
           {roastAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => toggleAddon(addon.id)}
+              onClick={() => toggleAddon(addon)}
               className={`border px-4 py-2 rounded ${
                 selectedAddons.includes(addon.id)
                   ? "border-orange-500 bg-orange-50"
@@ -154,7 +159,7 @@ export default function MenuDetailPage() {
           {shotAddons.map((addon) => (
             <button
               key={addon.id}
-              onClick={() => toggleAddon(addon.id)}
+              onClick={() => toggleAddon(addon)}
               className={`border px-4 py-2 rounded ${
                 selectedAddons.includes(addon.id)
                   ? "border-orange-500 bg-orange-50"

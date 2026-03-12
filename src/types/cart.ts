@@ -16,3 +16,8 @@ export type CartItem = {
     };
   }[];
 };
+
+export type Cart = {
+  id: string;
+  cartItems: CartItem[];
+};

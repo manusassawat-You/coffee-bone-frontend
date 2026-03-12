@@ -1,20 +1,26 @@
 import { apiFetch } from "../client";
 
+type LoginResponse = {
+  accessToken: string;
+};
+
+type MeResponse = {
+  email: string;
+  role: "ADMIN" | "USER";
+};
+
 export const authService = {
   login: async (data: { email: string; password: string }) => {
-    const res = await apiFetch("/auth/login", {
+    const res = await apiFetch<LoginResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify(data),
     });
 
-    console.log("LOGIN RESPONSE:", res);
-
-    // ดึง accessToken จาก backend
     const token = res.accessToken;
 
-    // เก็บ token ใน localStorage
     if (token) {
       localStorage.setItem("token", token);
+      document.cookie = `token=${token}; path=/`;
     }
 
     return res;
@@ -25,4 +31,11 @@ export const authService = {
       method: "POST",
       body: JSON.stringify(data),
     }),
+
+  me: () => apiFetch<MeResponse>("/auth/me"),
+
+  logout: () => {
+    localStorage.removeItem("token");
+    document.cookie = "token=; path=/; max-age=0";
+  },
 };

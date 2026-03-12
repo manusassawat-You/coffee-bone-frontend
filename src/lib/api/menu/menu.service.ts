@@ -1,9 +1,10 @@
 import { apiFetch } from "../client";
+import type { Menu } from "@/types/menu";
 
 export const menuService = {
-  getMenus: () => apiFetch("/menu"),
+  getMenus: () => apiFetch<Menu[]>("/menu"),
 
-  getMenuById: (id: string) => apiFetch(`/menu/${id}`),
+  getMenuById: (id: string) => apiFetch<Menu>(`/menu/${id}`),
 
   createMenu: (data: {
     menuName: string;
@@ -11,7 +12,7 @@ export const menuService = {
     description?: string;
     image?: string;
   }) =>
-    apiFetch("/menu", {
+    apiFetch<Menu>("/menu", {
       method: "POST",
       body: JSON.stringify(data),
     }),
@@ -25,13 +26,13 @@ export const menuService = {
       image?: string;
     },
   ) =>
-    apiFetch(`/menu/${id}`, {
+    apiFetch<Menu>(`/menu/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
     }),
 
   deleteMenu: (id: string) =>
-    apiFetch(`/menu/${id}`, {
+    apiFetch<{ success: boolean }>(`/menu/${id}`, {
       method: "DELETE",
     }),
 };

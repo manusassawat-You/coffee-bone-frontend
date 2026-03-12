@@ -1,5 +1,11 @@
 import { apiFetch } from "../client";
-import type { Addon } from "@/types/addon";
+
+export type Addon = {
+  id: string;
+  title: string;
+  price: number;
+  type: string;
+};
 
 export const addonService = {
   getAddons: () => apiFetch<Addon[]>("/addon"),

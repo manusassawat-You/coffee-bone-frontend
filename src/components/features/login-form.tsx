@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { authService } from "@/lib/api/auth/auth.service";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { loadUser } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +20,7 @@ export default function LoginForm() {
         email,
         password,
       });
-
+      loadUser();
       // ไม่ต้อง set token ซ้ำ เพราะ authService ทำแล้ว
       router.push("/");
     } catch (err) {

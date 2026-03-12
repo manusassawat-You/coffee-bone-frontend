@@ -1,7 +1,7 @@
 import { apiFetch } from "../client";
 
 export const cartService = {
-  getCart: () => apiFetch("/cart"),
+  getCart: () => apiFetch("/cart") as Promise<Cart>,
 
   addToCart: (data: { menuId: string; quantity: number; addons: string[] }) =>
     apiFetch("/cart", {
