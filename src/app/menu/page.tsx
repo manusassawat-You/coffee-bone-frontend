@@ -24,9 +24,9 @@ export default function MenuPage() {
       {menus.map((menu) => (
         <div key={menu.id} className="bg-white rounded-xl shadow p-5">
           {/* menu image */}
-          {menu.imageUrl && (
+          {menu.image && (
             <Image
-              src={menu.imageUrl}
+              src={menu.image}
               alt={menu.menuName}
               width={400}
               height={300}
