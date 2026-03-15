@@ -4,6 +4,8 @@ import { useState } from "react";
 import { authService } from "@/lib/api/auth/auth.service";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -20,12 +22,17 @@ export default function LoginForm() {
         email,
         password,
       });
+
       loadUser();
-      // ไม่ต้อง set token ซ้ำ เพราะ authService ทำแล้ว
-      router.push("/");
+
+      toast.success("เข้าสู่ระบบสำเร็จ");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
     } catch (err) {
       console.error(err);
-      alert("Login failed");
+      toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
     }
   };
 
@@ -36,7 +43,7 @@ export default function LoginForm() {
         <input
           type="email"
           placeholder="your@email.com"
-          className="w-full mt-1 p-3 rounded-md border bg-gray-100"
+          className="w-full mt-1 p-3 rounded-md border bg-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -47,7 +54,7 @@ export default function LoginForm() {
         <input
           type="password"
           placeholder="********"
-          className="w-full mt-1 p-3 rounded-md border bg-gray-100"
+          className="w-full mt-1 p-3 rounded-md border bg-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -55,10 +62,17 @@ export default function LoginForm() {
 
       <button
         type="submit"
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-semibold"
+        className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-semibold transition"
       >
         เข้าสู่ระบบ
       </button>
+
+      <p className="text-center text-sm text-gray-600">
+        ยังไม่มีบัญชี?{" "}
+        <Link href="/register" className="text-orange-500 hover:underline">
+          สมัครสมาชิก
+        </Link>
+      </p>
     </form>
   );
 }

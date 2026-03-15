@@ -24,13 +24,6 @@ export default function LoginPage() {
         </p>
 
         <LoginForm />
-
-        <div className="text-sm text-center mt-4">
-          ยังไม่มีบัญชี?{" "}
-          <Link href="/register" className="text-orange-500">
-            สมัครสมาชิก
-          </Link>
-        </div>
       </div>
     </div>
   );

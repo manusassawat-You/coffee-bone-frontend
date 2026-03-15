@@ -3,5 +3,5 @@ export type Menu = {
   menuName: string;
   description?: string;
   price: number;
-  image?: string;
+  imageUrl?: string;
 };

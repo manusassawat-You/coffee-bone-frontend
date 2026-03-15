@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 
 import { Menu } from "@/types/menu";
 import { menuService } from "@/lib/api/menu/menu.service";
@@ -43,10 +44,9 @@ export default function MenuDetailPage() {
     loadData();
   }, [id]);
 
-  // ⭐ เลือกได้ 1 ตัวต่อ type
+  // เลือกได้ 1 addon ต่อ 1 type
   const toggleAddon = (addon: Addon) => {
     setSelectedAddons((prev) => {
-      // ลบ addon ที่อยู่ type เดียวกันออกก่อน
       const filtered = prev.filter((selectedId) => {
         const existing = addons.find((a) => a.id === selectedId);
         return existing?.type !== addon.type;
@@ -83,9 +83,27 @@ export default function MenuDetailPage() {
   const shotAddons = addons.filter((a) => a.type === "shot");
 
   return (
-    <div className="p-10 max-w-3xl mx-auto">
+    <div className="p-10 max-w-4xl mx-auto">
+      {/* รูปเมนู */}
+      {menu.image && (
+        <div className="mb-6">
+          <Image
+            src={menu.image}
+            alt={menu.menuName}
+            width={600}
+            height={400}
+            className="rounded-xl object-cover"
+          />
+        </div>
+      )}
+
+      {/* ชื่อเมนู */}
       <h1 className="text-3xl font-bold">{menu.menuName}</h1>
-      <p className="text-gray-500">{menu.description}</p>
+
+      {/* รายละเอียด */}
+      <p className="text-gray-500 mt-2">{menu.description}</p>
+
+      {/* ราคา */}
       <p className="text-orange-500 text-xl font-bold mt-2">฿{menu.price}</p>
 
       {/* Coffee Bean */}
@@ -194,7 +212,7 @@ export default function MenuDetailPage() {
       {/* Add to cart */}
       <button
         onClick={addToCart}
-        className="mt-10 w-full bg-orange-500 text-white py-3 rounded-lg"
+        className="mt-10 w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600"
       >
         เพิ่มลงตะกร้า
       </button>

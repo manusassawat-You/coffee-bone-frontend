@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { authService } from "@/lib/api/auth/auth.service";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -21,50 +23,65 @@ export default function RegisterForm() {
         password,
       });
 
-      alert("สมัครสมาชิกสำเร็จ");
+      toast.success("สมัครสมาชิกสำเร็จ");
 
-      router.push("/login");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
     } catch (err) {
       console.error(err);
-      alert("Register failed");
+      toast.error("สมัครสมาชิกไม่สำเร็จ");
     }
   };
 
   return (
     <form onSubmit={handleRegister} className="space-y-4">
       <div>
-        <label>ชื่อผู้ใช้</label>
+        <label className="block text-sm mb-1">ชื่อผู้ใช้</label>
         <input
           type="text"
-          className="w-full border p-3 rounded bg-gray-100"
+          placeholder="กรอกชื่อผู้ใช้"
+          className="w-full border p-3 rounded bg-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
       </div>
 
       <div>
-        <label>อีเมล</label>
+        <label className="block text-sm mb-1">อีเมล</label>
         <input
           type="email"
-          className="w-full border p-3 rounded bg-gray-100"
+          placeholder="example@email.com"
+          className="w-full border p-3 rounded bg-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
       <div>
-        <label>รหัสผ่าน</label>
+        <label className="block text-sm mb-1">รหัสผ่าน</label>
         <input
           type="password"
-          className="w-full border p-3 rounded bg-gray-100"
+          placeholder="อย่างน้อย 6 ตัวอักษร"
+          className="w-full border p-3 rounded bg-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
 
-      <button className="w-full bg-orange-500 text-white py-3 rounded">
+      <button
+        type="submit"
+        className="w-full bg-orange-500 text-white py-3 rounded hover:bg-orange-600 transition"
+      >
         สมัครสมาชิก
       </button>
+
+      <p className="text-center text-sm text-gray-600">
+        มีบัญชีอยู่แล้ว?{" "}
+        <Link href="/login" className="text-orange-500 hover:underline">
+          เข้าสู่ระบบ
+        </Link>
+      </p>
     </form>
   );
 }
