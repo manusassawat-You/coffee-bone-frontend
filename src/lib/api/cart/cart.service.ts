@@ -1,4 +1,5 @@
 import { apiFetch } from "../client";
+import type { Cart } from "@/types/cart";
 
 export const cartService = {
   getCart: () => apiFetch("/cart") as Promise<Cart>,

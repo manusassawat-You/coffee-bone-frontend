@@ -142,9 +142,9 @@ export default function AdminMenuPage() {
             className="border p-4 rounded flex justify-between items-center"
           >
             <div className="flex items-center gap-4">
-              {menu.imageUrl && (
+              {menu.image && (
                 <Image
-                  src={menu.imageUrl}
+                  src={menu.image}
                   alt={menu.menuName}
                   width={64}
                   height={64}

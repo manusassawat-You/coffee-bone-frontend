@@ -1,3 +1,5 @@
+import { Addon } from "./addon";
+
 export type CartItem = {
   id: string;
   quantity: number;
@@ -9,11 +11,7 @@ export type CartItem = {
   };
 
   addons?: {
-    addon: {
-      id: string;
-      title: string;
-      price: number;
-    };
+    addon: Addon;
   }[];
 };
 

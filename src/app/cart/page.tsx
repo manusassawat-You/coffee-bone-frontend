@@ -3,51 +3,64 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cartService } from "@/lib/api/cart/cart.service";
+import type { CartItem } from "@/types/cart";
 
-type Addon = {
-  id: string;
-  title: string;
-  price: number;
-};
-
-type CartItem = {
+type UIItem = {
   id: string;
   menu: string;
   quantity: number;
-  addons: Addon[];
-  price: number;
+  addons: {
+    id: string;
+    title: string;
+    price: number;
+  }[];
   total: number;
 };
 
 export default function CartPage() {
   const router = useRouter();
 
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<UIItem[]>([]);
   const [total, setTotal] = useState(0);
 
   const loadCart = async () => {
     const data = await cartService.getCart();
 
-    console.log("CART DATA:", data);
+    const mapped: UIItem[] = data.cartItems.map((item: CartItem) => {
+      const addonTotal =
+        item.addons?.reduce((sum, a) => sum + a.addon.price, 0) || 0;
 
-    setCart(data.items || []);
-    setTotal(data.totalPrice || 0);
+      const total = item.quantity * (item.menu.price + addonTotal);
+
+      return {
+        id: item.id,
+        menu: item.menu.menuName,
+        quantity: item.quantity,
+        addons: item.addons?.map((a) => a.addon) || [],
+        total,
+      };
+    });
+
+    setCart(mapped);
+
+    const totalPrice = mapped.reduce((sum, item) => sum + item.total, 0);
+    setTotal(totalPrice);
   };
 
   useEffect(() => {
-    const init = async () => {
+    const fetchData = async () => {
       await loadCart();
     };
 
-    init();
+    fetchData();
   }, []);
 
-  const increase = async (item: CartItem) => {
+  const increase = async (item: UIItem) => {
     await cartService.updateQuantity(item.id, item.quantity + 1);
     loadCart();
   };
 
-  const decrease = async (item: CartItem) => {
+  const decrease = async (item: UIItem) => {
     if (item.quantity <= 1) return;
 
     await cartService.updateQuantity(item.id, item.quantity - 1);
@@ -75,9 +88,8 @@ export default function CartPage() {
           <div>
             <h2 className="font-semibold text-lg">{item.menu}</h2>
 
-            {/* addons */}
             <div className="flex gap-2 mt-2 flex-wrap">
-              {item.addons?.map((addon) => (
+              {item.addons.map((addon) => (
                 <span
                   key={addon.id}
                   className="text-xs bg-gray-100 px-2 py-1 rounded"
@@ -87,7 +99,6 @@ export default function CartPage() {
               ))}
             </div>
 
-            {/* quantity */}
             <div className="flex items-center gap-3 mt-4">
               <button
                 onClick={() => decrease(item)}
@@ -95,9 +106,7 @@ export default function CartPage() {
               >
                 -
               </button>
-
               <span>{item.quantity}</span>
-
               <button
                 onClick={() => increase(item)}
                 className="border px-3 py-1 rounded"
@@ -107,7 +116,6 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* price */}
           <div className="text-right">
             <p className="text-orange-500 font-bold text-lg">
               ฿{item.total.toFixed(2)}
@@ -123,7 +131,6 @@ export default function CartPage() {
         </div>
       ))}
 
-      {/* total */}
       {cart.length > 0 && (
         <div className="border-t mt-6 pt-6">
           <p className="text-lg font-semibold">รวม: ฿{total.toFixed(2)}</p>
