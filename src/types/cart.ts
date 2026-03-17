@@ -1,21 +1,18 @@
-import { Addon } from "./addon";
-
 export type CartItem = {
   id: string;
+  menu: string;
   quantity: number;
-
-  menu: {
+  addons: {
     id: string;
-    menuName: string;
+    title: string;
     price: number;
-  };
-
-  addons?: {
-    addon: Addon;
   }[];
+  price: number;
+  total: number;
 };
 
 export type Cart = {
-  id: string;
-  cartItems: CartItem[];
+  cartId: string | null;
+  items: CartItem[];
+  totalPrice: number;
 };

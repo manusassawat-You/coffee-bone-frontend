@@ -15,9 +15,8 @@ export default function CartBadge() {
       try {
         const cart = await cartService.getCart();
 
-        if (cart?.cartItems) {
-          setCount(cart.cartItems.length);
-        }
+        const items = cart?.items || [];
+        setCount(items.length);
       } catch {
         setCount(0);
       }

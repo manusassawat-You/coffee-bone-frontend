@@ -5,62 +5,49 @@ import { useRouter } from "next/navigation";
 import { cartService } from "@/lib/api/cart/cart.service";
 import type { CartItem } from "@/types/cart";
 
-type UIItem = {
-  id: string;
-  menu: string;
-  quantity: number;
-  addons: {
-    id: string;
-    title: string;
-    price: number;
-  }[];
-  total: number;
-};
-
 export default function CartPage() {
   const router = useRouter();
 
-  const [cart, setCart] = useState<UIItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
-
   const loadCart = async () => {
-    const data = await cartService.getCart();
+    try {
+      const data = await cartService.getCart();
 
-    const mapped: UIItem[] = data.cartItems.map((item: CartItem) => {
-      const addonTotal =
-        item.addons?.reduce((sum, a) => sum + a.addon.price, 0) || 0;
+      const items = data?.items || [];
 
-      const total = item.quantity * (item.menu.price + addonTotal);
-
-      return {
-        id: item.id,
-        menu: item.menu.menuName,
-        quantity: item.quantity,
-        addons: item.addons?.map((a) => a.addon) || [],
-        total,
-      };
-    });
-
-    setCart(mapped);
-
-    const totalPrice = mapped.reduce((sum, item) => sum + item.total, 0);
-    setTotal(totalPrice);
+      setCart(items);
+      setTotal(data?.totalPrice || 0);
+    } catch (err) {
+      console.error(err);
+      setCart([]);
+      setTotal(0);
+    }
   };
-
   useEffect(() => {
-    const fetchData = async () => {
-      await loadCart();
-    };
+    const loadCart = async () => {
+      try {
+        const data = await cartService.getCart();
 
-    fetchData();
+        const items = data?.items || [];
+
+        setCart(items);
+        setTotal(data?.totalPrice || 0);
+      } catch (err) {
+        console.error(err);
+        setCart([]);
+        setTotal(0);
+      }
+    };
+    loadCart();
   }, []);
 
-  const increase = async (item: UIItem) => {
+  const increase = async (item: CartItem) => {
     await cartService.updateQuantity(item.id, item.quantity + 1);
     loadCart();
   };
 
-  const decrease = async (item: UIItem) => {
+  const decrease = async (item: CartItem) => {
     if (item.quantity <= 1) return;
 
     await cartService.updateQuantity(item.id, item.quantity - 1);
