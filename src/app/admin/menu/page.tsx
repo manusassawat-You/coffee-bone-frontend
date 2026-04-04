@@ -97,7 +97,8 @@ export default function AdminMenuPage() {
           placeholder="Price"
           className="border p-2 rounded"
         />
-
+      </div>
+      <div>
         <input
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -158,10 +159,9 @@ export default function AdminMenuPage() {
                 <div className="text-orange-500 font-bold">฿{menu.price}</div>
               </div>
             </div>
-
             <button
               onClick={() => deleteMenu(menu.id)}
-              className="text-red-500"
+              className="text-red-500 "
             >
               Delete
             </button>
