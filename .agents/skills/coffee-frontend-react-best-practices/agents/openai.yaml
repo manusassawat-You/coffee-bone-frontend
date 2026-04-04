@@ -1,0 +1,4 @@
+interface:
+  display_name: "Coffee Frontend React Best Practices"
+  short_description: "Optimize this coffee app with Vercel React guidance"
+  default_prompt: "Use $coffee-frontend-react-best-practices to review or refactor this coffee app for React and Next.js performance."
