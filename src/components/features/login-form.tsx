@@ -17,10 +17,18 @@ export default function LoginForm() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const normalizedEmail = email.trim();
+    const normalizedPassword = password.trim();
+
+    if (!normalizedEmail || !normalizedPassword) {
+      toast.error("Please enter both email and password");
+      return;
+    }
+
     try {
       await authService.login({
-        email,
-        password,
+        email: normalizedEmail,
+        password: normalizedPassword,
       });
 
       await loadUser();

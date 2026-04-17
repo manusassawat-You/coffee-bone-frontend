@@ -1,11 +1,16 @@
+import { clearStoredToken, getStoredToken } from "@/lib/auth/token-storage";
+
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export async function apiFetch<T>(
   path: string,
   options?: RequestInit,
 ): Promise<T> {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  if (!API_URL) {
+    throw new Error("NEXT_PUBLIC_BACKEND_URL is not configured");
+  }
+
+  const token = getStoredToken();
 
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -27,9 +32,15 @@ export async function apiFetch<T>(
 
   if (res.status === 401) {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      document.cookie = "token=; path=/; max-age=0";
-      window.location.href = "/login";
+      clearStoredToken();
+
+      const isAuthPage =
+        window.location.pathname.startsWith("/login") ||
+        window.location.pathname.startsWith("/register");
+
+      if (!isAuthPage) {
+        window.location.href = "/login";
+      }
     }
     throw new Error("Unauthorized");
   }
@@ -37,10 +48,10 @@ export async function apiFetch<T>(
   if (!res.ok) {
     const message =
       typeof data === "object" && data && "message" in data
-        ? (data as { message?: string }).message
+        ? (data as { message?: string | string[] }).message
         : "API error";
 
-    throw new Error(message);
+    throw new Error(Array.isArray(message) ? message.join(", ") : message);
   }
 
   return data as T;

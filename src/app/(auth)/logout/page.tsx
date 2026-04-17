@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { authService } from "@/lib/api/auth/auth.service";
 
 export default function LogoutPage() {
   useEffect(() => {
-    localStorage.removeItem("token");
+    authService.logout();
     window.location.href = "/login";
   }, []);
 

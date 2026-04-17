@@ -8,6 +8,7 @@ import { Menu } from "@/types/menu";
 import { menuService } from "@/lib/api/menu/menu.service";
 import { addonService } from "@/lib/api/addon/addon.service";
 import { cartService } from "@/lib/api/cart/cart.service";
+import { authService } from "@/lib/api/auth/auth.service";
 
 import toast from "react-hot-toast";
 
@@ -59,6 +60,12 @@ export default function MenuDetailPage() {
   };
 
   const addToCart = async () => {
+    if (!authService.hasToken()) {
+      toast.error("Please login before adding items to your cart");
+      router.push("/login");
+      return;
+    }
+
     try {
       await cartService.addToCart({
         menuId: id as string,

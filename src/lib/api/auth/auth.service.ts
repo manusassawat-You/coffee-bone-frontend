@@ -1,4 +1,9 @@
 import { apiFetch } from "../client";
+import {
+  clearStoredToken,
+  getStoredToken,
+  persistToken,
+} from "@/lib/auth/token-storage";
 
 type LoginResponse = {
   accessToken: string;
@@ -20,9 +25,7 @@ export const authService = {
     const token = res.accessToken;
 
     if (token) {
-      localStorage.setItem("token", token);
-      const maxAge = res.expiresIn ?? 60 * 60 * 24;
-      document.cookie = `token=${token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      persistToken(token, res.expiresIn ?? 60 * 60 * 24);
     }
 
     return res;
@@ -36,8 +39,9 @@ export const authService = {
 
   me: () => apiFetch<MeResponse>("/auth/me"),
 
+  hasToken: () => Boolean(getStoredToken()),
+
   logout: () => {
-    localStorage.removeItem("token");
-    document.cookie = "token=; path=/; max-age=0";
+    clearStoredToken();
   },
 };

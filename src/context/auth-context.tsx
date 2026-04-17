@@ -27,6 +27,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
+    if (!authService.hasToken()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = await authService.me();
       setUser(data);

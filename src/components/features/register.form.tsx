@@ -16,11 +16,20 @@ export default function RegisterForm() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const normalizedUsername = username.trim();
+    const normalizedEmail = email.trim();
+    const normalizedPassword = password.trim();
+
+    if (!normalizedUsername || !normalizedEmail || !normalizedPassword) {
+      toast.error("Please complete all fields");
+      return;
+    }
+
     try {
       await authService.register({
-        username,
-        email,
-        password,
+        username: normalizedUsername,
+        email: normalizedEmail,
+        password: normalizedPassword,
       });
 
       toast.success("สมัครสมาชิกสำเร็จ");
