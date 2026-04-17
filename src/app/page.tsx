@@ -28,14 +28,16 @@ export default function Home() {
         </div>
 
         {/* Image */}
-        <div className="bg-white">
-          <Image
-            src="/next.svg"
-            width={500}
-            height={300}
-            alt="coffee"
-            className="rounded-xl shadow-lg"
-          />
+        <div>
+          <Link href="/menu">
+            <Image
+              src="/img-coffee.png"
+              width={500}
+              height={300}
+              alt="coffee"
+              className="rounded-xl shadow-lg"
+            />
+          </Link>
         </div>
       </div>
     </section>
