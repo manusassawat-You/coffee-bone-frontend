@@ -11,6 +11,8 @@ import { cartService } from "@/lib/api/cart/cart.service";
 
 import toast from "react-hot-toast";
 
+const fallbackMenuImage = "/img-coffee.png";
+
 type Addon = {
   id: string;
   title: string;
@@ -85,17 +87,15 @@ export default function MenuDetailPage() {
   return (
     <div className="p-10 max-w-4xl mx-auto">
       {/* รูปเมนู */}
-      {menu.image && (
-        <div className="mb-6">
-          <Image
-            src={menu.image}
-            alt={menu.menuName}
-            width={600}
-            height={400}
-            className="rounded-xl object-cover"
-          />
-        </div>
-      )}
+      <div className="mb-6">
+        <Image
+          src={menu.image || fallbackMenuImage}
+          alt={menu.menuName}
+          width={600}
+          height={400}
+          className="rounded-xl object-cover"
+        />
+      </div>
 
       {/* ชื่อเมนู */}
       <h1 className="text-3xl font-bold">{menu.menuName}</h1>

@@ -6,6 +6,8 @@ import Image from "next/image";
 import { Menu } from "@/types/menu";
 import { menuService } from "@/lib/api/menu/menu.service";
 
+const fallbackMenuImage = "/img-coffee.png";
+
 export default function MenuPage() {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,16 +50,13 @@ export default function MenuPage() {
     <div className="p-10 grid grid-cols-3 gap-6">
       {menus.map((menu) => (
         <div key={menu.id} className="bg-white rounded-xl shadow p-5">
-          {/* menu image */}
-          {menu.image && (
-            <Image
-              src={menu.image}
-              alt={menu.menuName}
-              width={400}
-              height={300}
-              className="rounded-lg object-cover mb-4 w-full h-48"
-            />
-          )}
+          <Image
+            src={menu.image || fallbackMenuImage}
+            alt={menu.menuName}
+            width={400}
+            height={300}
+            className="rounded-lg object-cover mb-4 w-full h-48"
+          />
 
           <h2 className="text-lg font-bold">{menu.menuName}</h2>
 
