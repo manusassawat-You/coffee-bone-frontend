@@ -8,16 +8,41 @@ import { menuService } from "@/lib/api/menu/menu.service";
 
 export default function MenuPage() {
   const [menus, setMenus] = useState<Menu[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     const loadMenus = async () => {
-      const data = await menuService.getMenus();
-      setMenus(data);
+      try {
+        const data = await menuService.getMenus();
+        setMenus(data);
+      } catch (err) {
+        console.error(err);
+        setError("โหลดเมนูกาแฟไม่สำเร็จ");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadMenus();
   }, []);
+
+  if (isLoading) {
+    return <div className="p-10 text-gray-500">กำลังโหลดเมนูกาแฟ...</div>;
+  }
+
+  if (error) {
+    return <div className="p-10 text-red-500">{error}</div>;
+  }
+
+  if (menus.length === 0) {
+    return (
+      <div className="p-10 text-gray-500">
+        ยังไม่มีเมนูกาแฟในระบบ
+      </div>
+    );
+  }
 
   return (
     <div className="p-10 grid grid-cols-3 gap-6">
