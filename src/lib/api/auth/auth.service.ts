@@ -2,6 +2,7 @@ import { apiFetch } from "../client";
 
 type LoginResponse = {
   accessToken: string;
+  expiresIn: number;
 };
 
 type MeResponse = {
@@ -20,7 +21,8 @@ export const authService = {
 
     if (token) {
       localStorage.setItem("token", token);
-      document.cookie = `token=${token}; path=/`;
+      const maxAge = res.expiresIn ?? 60 * 60 * 24;
+      document.cookie = `token=${token}; path=/; max-age=${maxAge}; SameSite=Lax`;
     }
 
     return res;
