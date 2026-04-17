@@ -24,6 +24,11 @@ export default function LoginPage() {
 
         <LoginForm />
       </div>
+      <div>
+        <p>Demo Account:</p>
+        <p> Email: admin1@gmail.com</p>
+        <p>Password: 123456</p>
+      </div>
     </div>
   );
 }
