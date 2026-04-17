@@ -23,7 +23,8 @@ export default function LoginForm() {
         password,
       });
 
-      loadUser();
+      await loadUser();
+      router.refresh();
 
       toast.success("เข้าสู่ระบบสำเร็จ");
 
